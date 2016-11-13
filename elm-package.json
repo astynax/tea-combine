@@ -1,12 +1,16 @@
 {
     "version": "1.0.0",
-    "summary": "A sandbox for the \"Perspective\" library",
-    "repository": "https://github.com/astynax/hello-perspective.git",
+    "summary": "Combinator library for \"The Elm Arcitecture\"-powered applications",
+    "repository": "https://github.com/astynax/tea-combine.git",
     "license": "MIT",
     "source-directories": [
         "src",
     ],
-    "exposed-modules": [],
+    "exposed-modules": [
+        "TeaCombine",
+        "TeaCombine.Pure",
+        "TeaCombine.Effectful"
+    ],
     "dependencies": {
         "Fresheyeball/elm-tuple-extra": "2.2.0 <= v < 3.0.0",
         "toastal/either": "2.0.0 <= v < 3.0.0",
