@@ -1,14 +1,28 @@
 module Main exposing (..)
 
+import Either exposing (Either)
 import Html exposing (Html)
 import Html.App exposing (beginnerProgram)
-import Counter
-import CheckBox
 import String
-import TeaCombine exposing (..)
 import Tuple2
 
 
+-- local imports
+
+import CheckBox
+import Counter
+import TeaCombine exposing (..)
+import TeaCombine.Pure exposing (..)
+
+
+type alias Demo model msg =
+    { model : model
+    , view : View model msg
+    , update : Update msg model
+    }
+
+
+main : Program Never
 main =
     let
         simpleDemo =
@@ -61,6 +75,12 @@ main =
                 `atop` complexDemo
 
 
+demo :
+    String
+    -> model
+    -> View model msg
+    -> Update msg model
+    -> Demo model msg
 demo title model view update =
     { model = model
     , view =
@@ -77,6 +97,10 @@ demo title model view update =
     }
 
 
+atop :
+    Demo model1 msg1
+    -> Demo model2 msg2
+    -> Demo (Both model1 model2) (Either msg1 msg2)
 atop demo1 demo2 =
     { model = demo1.model <> demo2.model
     , view =

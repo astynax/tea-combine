@@ -1,11 +1,11 @@
 {
     "version": "1.0.0",
-    "summary": "Examples for TeaCombine library",
+    "summary": "Examples for TeaCombine.Pure",
     "repository": "https://github.com/user/project.git",
-    "license": "BSD3",
+    "license": "MIT",
     "source-directories": [
         ".",
-        "../src"
+        "../../src"
     ],
     "exposed-modules": [],
     "dependencies": {
