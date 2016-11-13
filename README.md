@@ -19,3 +19,6 @@ main =
 and have an app what looks like this:
 
 ![screenshot](https://github.com/astynax/tea-combine/blob/master/assets/example.png)
+
+Examples of usage can be found [here](https://github.com/astynax/tea-combine/tree/master/examples), and here is a [live demo #1](https://astynax.github.com/tea-combine/examples/pure.html) (pure)
+and [live demo #2](https://astynax.github.com/tea-combine/examples/effectful.html) (effectful).
