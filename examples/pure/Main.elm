@@ -18,7 +18,7 @@ import TeaCombine.Pure exposing (..)
 type alias Demo model msg =
     { model : model
     , view : View model msg
-    , update : Update msg model
+    , update : Update model msg
     }
 
 
@@ -79,7 +79,7 @@ demo :
     String
     -> model
     -> View model msg
-    -> Update msg model
+    -> Update model msg
     -> Demo model msg
 demo title model view update =
     { model = model

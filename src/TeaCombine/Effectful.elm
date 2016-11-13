@@ -11,6 +11,7 @@ module TeaCombine.Effectful
         )
 
 import Array exposing (Array)
+import Platform.Cmd exposing ((!))
 import Either exposing (Either(..))
 import Tuple2 exposing (mapFst, mapSnd, mapEach)
 
@@ -35,10 +36,10 @@ updateBoth :
 updateBoth ul ur =
     let
         applyL f m =
-            mapFst (f m) >> (\( ( x, c ), y ) -> ( ( x, y ), Cmd.map Left c ))
+            mapFst (f m) >> (\( ( x, c ), y ) -> ( x, y ) ! [ Cmd.map Left c ])
 
         applyR f m =
-            mapSnd (f m) >> (\( x, ( y, c ) ) -> ( ( x, y ), Cmd.map Right c ))
+            mapSnd (f m) >> (\( x, ( y, c ) ) -> ( x, y ) ! [ Cmd.map Right c ])
     in
         Either.unpack (applyL ul) (applyR ur)
 
@@ -54,7 +55,7 @@ updateEach updateAt (Ix idx msg) models =
                 (Cmd.map (Ix idx))
                 << updateAt idx msg
             )
-        |> Maybe.withDefault ( models, Cmd.none )
+        |> Maybe.withDefault (models ! [])
 
 
 updateAll :
@@ -66,10 +67,10 @@ updateAll updates =
             Array.fromList updates
 
         updateAt idx =
-            Maybe.withDefault (\_ m -> ( m, Cmd.none ))
+            Maybe.withDefault (\_ m -> m ! [])
                 (Array.get idx uarr)
     in
-        updateEach (\_ _ m -> ( m, Cmd.none ))
+        updateEach updateAt
 
 
 (<&>) :
@@ -85,12 +86,12 @@ updateAll updates =
     -> ( model2, Cmd msg2 )
     -> ( Both model1 model2, Cmd (Either msg1 msg2) )
 (<>) ( m1, c1 ) ( m2, c2 ) =
-    ( ( m1, m2 )
-    , Cmd.batch
-        [ Cmd.map Left c1
-        , Cmd.map Right c2
-        ]
-    )
+    ( m1, m2 )
+        ! [ Cmd.batch
+                [ Cmd.map Left c1
+                , Cmd.map Right c2
+                ]
+          ]
 
 
 (<+>) :

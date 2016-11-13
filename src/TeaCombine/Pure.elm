@@ -4,8 +4,8 @@ module TeaCombine.Pure
         , updateBoth
         , updateEach
         , updateAll
-        , (<&>)
         , (<>)
+        , (<&>)
         )
 
 import Array exposing (Array)
@@ -18,21 +18,21 @@ import Tuple2
 import TeaCombine exposing (..)
 
 
-type alias Update msg model =
+type alias Update model msg =
     msg -> model -> model
 
 
 updateBoth :
-    Update msg1 model1
-    -> Update msg2 model2
-    -> Update (Either msg1 msg2) (Both model1 model2)
+    Update model1 msg1
+    -> Update model2 msg2
+    -> Update (Both model1 model2) (Either msg1 msg2)
 updateBoth ua ub =
     Either.unpack (Tuple2.mapFst << ua) (Tuple2.mapSnd << ub)
 
 
 updateEach :
-    (Int -> Update msg model)
-    -> Update (Ix msg) (Array model)
+    (Int -> Update model msg)
+    -> Update (Array model) (Ix msg)
 updateEach updateAt (Ix idx msg) models =
     Array.get idx models
         |> Maybe.map (flip (Array.set idx) models << updateAt idx msg)
@@ -40,26 +40,24 @@ updateEach updateAt (Ix idx msg) models =
 
 
 updateAll :
-    List (Update msg model)
-    -> Update (Ix msg) (Array model)
+    List (Update model msg)
+    -> Update (Array model) (Ix msg)
 updateAll updates =
     let
         uarr =
             Array.fromList updates
 
-        updateIx =
-            Maybe.withDefault (flip always) << flip Array.get uarr
+        updateAt idx =
+            Maybe.withDefault (flip always)
+                (Array.get idx uarr)
     in
-        \(Ix idx msg) models ->
-            Array.get idx models
-                |> Maybe.map (flip (Array.set idx) models << updateIx idx msg)
-                |> Maybe.withDefault models
+        updateEach updateAt
 
 
 (<&>) :
-    Update msg1 model1
-    -> Update msg2 model2
-    -> Update (Either msg1 msg2) (Both model1 model2)
+    Update model1 msg1
+    -> Update model2 msg2
+    -> Update (Both model1 model2) (Either msg1 msg2)
 (<&>) =
     updateBoth
 

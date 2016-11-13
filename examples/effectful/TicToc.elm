@@ -3,6 +3,7 @@ module TicToc exposing (..)
 import Html exposing (Html)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (checked, type')
+import Platform.Cmd exposing ((!))
 import Time
 
 
@@ -26,12 +27,11 @@ type Msg
 
 init : Float -> ( Model, Cmd Msg )
 init i =
-    ( { interval = i
-      , state = False
-      , enabled = True
-      }
-    , Cmd.none
-    )
+    { interval = i
+    , state = False
+    , enabled = True
+    }
+        ! []
 
 
 view : View Model Msg
@@ -55,14 +55,14 @@ view m =
 
 update : UpdateE Model Msg
 update msg model =
-    ( case msg of
+    (case msg of
         Toggle ->
             { model | enabled = not model.enabled }
 
         Tick ->
             { model | state = not model.state }
-    , Cmd.none
     )
+        ! []
 
 
 sub : Subscription Model Msg
