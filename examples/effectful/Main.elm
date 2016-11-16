@@ -1,7 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html)
-import Html.App exposing (program)
+import Html exposing (Html, program)
 
 
 -- local imports
@@ -19,14 +18,13 @@ type alias Demo model msg =
     }
 
 
-main : Program Never
 main =
     let
         simpleDemo =
             demo
                 "Pair of effectful components: one `aside` another"
                 (TicToc.init 0.5 <> TicToc.init 0.25)
-                (TicToc.view `aside` TicToc.view)
+                (TicToc.view <|> TicToc.view)
                 (TicToc.update <&> TicToc.update)
                 (TicToc.sub <+> TicToc.sub)
     in

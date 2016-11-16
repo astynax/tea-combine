@@ -10,7 +10,7 @@ module TeaCombine.Pure
 
 import Array exposing (Array)
 import Either exposing (Either(..))
-import Tuple2
+import Tuple
 
 
 -- local import
@@ -27,7 +27,7 @@ updateBoth :
     -> Update model2 msg2
     -> Update (Both model1 model2) (Either msg1 msg2)
 updateBoth ua ub =
-    Either.unpack (Tuple2.mapFst << ua) (Tuple2.mapSnd << ub)
+    Either.unpack (Tuple.mapFirst << ua) (Tuple.mapSecond << ub)
 
 
 updateEach :

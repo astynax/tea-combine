@@ -13,7 +13,7 @@ module TeaCombine.Effectful
 import Array exposing (Array)
 import Platform.Cmd exposing ((!))
 import Either exposing (Either(..))
-import Tuple2 exposing (mapFst, mapSnd, mapEach)
+import Tuple
 
 
 -- local imports
@@ -36,10 +36,10 @@ updateBoth :
 updateBoth ul ur =
     let
         applyL f m =
-            mapFst (f m) >> (\( ( x, c ), y ) -> ( x, y ) ! [ Cmd.map Left c ])
+            Tuple.mapFirst (f m) >> (\( ( x, c ), y ) -> ( x, y ) ! [ Cmd.map Left c ])
 
         applyR f m =
-            mapSnd (f m) >> (\( x, ( y, c ) ) -> ( x, y ) ! [ Cmd.map Right c ])
+            Tuple.mapSecond (f m) >> (\( x, ( y, c ) ) -> ( x, y ) ! [ Cmd.map Right c ])
     in
         Either.unpack (applyL ul) (applyR ur)
 
@@ -50,9 +50,8 @@ updateEach :
 updateEach updateAt (Ix idx msg) models =
     Array.get idx models
         |> Maybe.map
-            (mapEach
-                (flip (Array.set idx) models)
-                (Cmd.map (Ix idx))
+            (Tuple.mapFirst (flip (Array.set idx) models)
+                << Tuple.mapSecond (Cmd.map (Ix idx))
                 << updateAt idx msg
             )
         |> Maybe.withDefault (models ! [])

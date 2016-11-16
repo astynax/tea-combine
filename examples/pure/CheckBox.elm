@@ -1,10 +1,10 @@
 module CheckBox exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (checked, type')
+import Html.Attributes exposing (checked, type_)
 import Html.Events exposing (onClick)
 import TeaCombine exposing (View)
-import Tuple2
+import Tuple
 
 
 type alias Model =
@@ -21,18 +21,18 @@ mkModel =
 
 
 view : View Model Msg
-view ( label', state ) =
+view ( label_, state ) =
     label []
         [ input
             [ checked state
-            , type' "checkbox"
+            , type_ "checkbox"
             , onClick ()
             ]
             []
-        , text label'
+        , text label_
         ]
 
 
 update : Msg -> Model -> Model
 update =
-    always <| Tuple2.mapSnd not
+    always <| Tuple.mapSecond not

@@ -1,10 +1,9 @@
 module Main exposing (..)
 
 import Either exposing (Either)
-import Html exposing (Html)
-import Html.App exposing (beginnerProgram)
+import Html exposing (Html, beginnerProgram)
 import String
-import Tuple2
+import Tuple
 
 
 -- local imports
@@ -22,14 +21,13 @@ type alias Demo model msg =
     }
 
 
-main : Program Never
 main =
     let
         simpleDemo =
             demo
-                "Just `aside`"
+                "Just aside"
                 (Counter.model <> Counter.model)
-                (Counter.view `aside` Counter.view)
+                (Counter.view <|> Counter.view)
                 (Counter.update <&> Counter.update)
 
         arrayDemo =
@@ -39,7 +37,7 @@ main =
             in
                 demo
                     "Array of same components"
-                    (all <| List.map (CheckBox.mkModel << toString) [1..5])
+                    (all <| List.map (CheckBox.mkModel << toString) <| List.range 1 5)
                     (asUL << viewEach (always CheckBox.view))
                     (updateEach <| always CheckBox.update)
 
@@ -51,18 +49,17 @@ main =
                     <> Counter.model
                 )
                 (Counter.view
-                    `aside`
-                        (Html.span []
+                    <|> (Html.span []
                             << viewAll
                                 [ CheckBox.view
-                                    << Tuple2.mapFst
+                                    << Tuple.mapFirst
                                         (\label ->
                                             String.concat [ "<", label, ">" ]
                                         )
                                 , CheckBox.view
                                 ]
                         )
-                    `aside` Counter.view
+                    <|> Counter.view
                 )
                 (Counter.update
                     <&> updateAll [ CheckBox.update, CheckBox.update ]
@@ -70,9 +67,9 @@ main =
                 )
     in
         beginnerProgram <|
-            simpleDemo
-                `atop` arrayDemo
-                `atop` complexDemo
+            atop simpleDemo <|
+                atop arrayDemo
+                    complexDemo
 
 
 demo :

@@ -7,14 +7,13 @@ module TeaCombine
         , viewEach
         , viewAll
         , all
-        , aside
+        , (<|>)
         )
 
 import Array exposing (Array)
 import Either exposing (Either(..))
 import Html exposing (Html)
-import Html.App as Html
-import Tuple2
+import Tuple
 
 
 type alias View model msg =
@@ -64,10 +63,10 @@ all =
     Array.fromList
 
 
-aside :
+(<|>) :
     View a x
     -> View b y
     -> Both a b
     -> Html (Either x y)
-aside v1 v2 =
-    viewBoth v1 v2 >> uncurry (\h1 h2 -> Html.span [] [ h1, h2 ])
+(<|>) v1 v2 =
+    viewBoth v1 v2 >> \(h1, h2) -> Html.span [] [ h1, h2 ]
