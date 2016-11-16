@@ -11,7 +11,7 @@ import TeaCombine.Pure exposing (..)
 main =
     beginnerProgram
         { model = Counter.model <> CheckBox.mkModel "1" <> CheckBox.mkModel "2"
-        , view = Counter.view `aside` CheckBox.view `aside` CheckBox.view
+        , view = Counter.view <|> CheckBox.view <|> CheckBox.view
         , update = Counter.update <&> CheckBox.update <&> CheckBox.update
         }
 ```
