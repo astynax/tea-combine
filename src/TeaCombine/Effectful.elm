@@ -10,6 +10,14 @@ module TeaCombine.Effectful
         , (<+>)
         )
 
+{-| FIXME: fill the docs
+
+@docs UpdateE, Subscription, updateBoth, updateEach, updateAll
+
+@docs (<>), (<&>), (<+>)
+
+-}
+
 import Array exposing (Array)
 import Platform.Cmd exposing ((!))
 import Either exposing (Either(..))
@@ -21,14 +29,20 @@ import Tuple
 import TeaCombine exposing (Both, Ix(..))
 
 
+{-| A type alias for the effectful (that returns also a @Cmd) update function
+-}
 type alias UpdateE model msg =
     msg -> model -> ( model, Cmd msg )
 
 
+{-| A type alias for the subscription function
+-}
 type alias Subscription model msg =
     model -> Sub msg
 
 
+{-| Updates one of two submodels using corresponding subupdate function
+-}
 updateBoth :
     UpdateE model1 msg1
     -> UpdateE model2 msg2
@@ -36,14 +50,19 @@ updateBoth :
 updateBoth ul ur =
     let
         applyL f m =
-            Tuple.mapFirst (f m) >> (\( ( x, c ), y ) -> ( x, y ) ! [ Cmd.map Left c ])
+            Tuple.mapFirst (f m)
+                >> (\( ( x, c ), y ) -> ( x, y ) ! [ Cmd.map Left c ])
 
         applyR f m =
-            Tuple.mapSecond (f m) >> (\( x, ( y, c ) ) -> ( x, y ) ! [ Cmd.map Right c ])
+            Tuple.mapSecond (f m)
+                >> (\( x, ( y, c ) ) -> ( x, y ) ! [ Cmd.map Right c ])
     in
         Either.unpack (applyL ul) (applyR ur)
 
 
+{-| Updates one of submodels in array using corresponding (by index)
+update function
+-}
 updateEach :
     (Int -> UpdateE model msg)
     -> UpdateE (Array model) (Ix msg)
@@ -57,6 +76,8 @@ updateEach updateAt (Ix idx msg) models =
         |> Maybe.withDefault (models ! [])
 
 
+{-| Updates one of submodels using a corresponding update function from the list
+-}
 updateAll :
     List (UpdateE model msg)
     -> UpdateE (Array model) (Ix msg)
@@ -72,6 +93,8 @@ updateAll updates =
         updateEach updateAt
 
 
+{-| An infix alias for the @updateBoth
+-}
 (<&>) :
     UpdateE model1 msg1
     -> UpdateE model2 msg2
@@ -80,6 +103,8 @@ updateAll updates =
     updateBoth
 
 
+{-| A combinator that combines two inits (pairs "mode + @Cmd") info one
+-}
 (<>) :
     ( model1, Cmd msg1 )
     -> ( model2, Cmd msg2 )
@@ -93,6 +118,8 @@ updateAll updates =
           ]
 
 
+{-| A combinator that combines two subscription functions
+-}
 (<+>) :
     Subscription model1 msg1
     -> Subscription model2 msg2

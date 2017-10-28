@@ -21,15 +21,13 @@ type alias Demo model msg =
 main =
     let
         simpleDemo =
-            demo
-                "Pair of effectful components: one `aside` another"
+            demo "Pair of effectful components"
                 (TicToc.init 0.5 <> TicToc.init 0.25)
                 (TicToc.view <|> TicToc.view)
                 (TicToc.update <&> TicToc.update)
                 (TicToc.sub <+> TicToc.sub)
     in
-        program <|
-            simpleDemo
+        program <| simpleDemo
 
 
 demo :
