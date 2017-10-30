@@ -2,7 +2,7 @@ module Simple exposing (..)
 
 import Html
 import TeaCombine exposing (..)
-import TeaCombine.Pure exposing (..)
+import TeaCombine.Pure.Pair exposing (..)
 import CheckBox
 import Counter
 

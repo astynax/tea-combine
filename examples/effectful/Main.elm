@@ -7,13 +7,14 @@ import Html exposing (Html, program)
 
 import TeaCombine exposing (..)
 import TeaCombine.Effectful exposing (..)
+import TeaCombine.Effectful.Pair exposing (..)
 import TicToc
 
 
 type alias Demo model msg =
     { init : ( model, Cmd msg )
     , view : View model msg
-    , update : UpdateE model msg
+    , update : Update model msg
     , subscriptions : Subscription model msg
     }
 
@@ -23,7 +24,7 @@ main =
         simpleDemo =
             demo "Pair of effectful components"
                 (TicToc.init 0.5 <> TicToc.init 0.25)
-                (TicToc.view <|> TicToc.view)
+                (TicToc.view <||> TicToc.view)
                 (TicToc.update <&> TicToc.update)
                 (TicToc.sub <+> TicToc.sub)
     in
@@ -34,7 +35,7 @@ demo :
     String
     -> ( model, Cmd msg )
     -> View model msg
-    -> UpdateE model msg
+    -> Update model msg
     -> Subscription model msg
     -> Demo model msg
 demo title init view update subscriptions =
@@ -52,3 +53,11 @@ demo title init view update subscriptions =
     , update = update
     , subscriptions = subscriptions
     }
+
+
+(<||>) v1 v2 m =
+    let
+        ( h1, h2 ) =
+            (v1 <|> v2) m
+    in
+        Html.div [] [ h1, h2 ]

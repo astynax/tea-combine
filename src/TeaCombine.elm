@@ -6,13 +6,13 @@ module TeaCombine
         , viewBoth
         , viewEach
         , viewAll
-        , all
+        , initAll
         , (<|>)
         )
 
 {-| FIXME: fill the docs
 
-@docs View, Both, Ix, viewBoth, viewEach, viewAll, all, (<|>)
+@docs View, Both, Ix, viewBoth, viewEach, viewAll, initAll, (<|>)
 
 -}
 
@@ -45,7 +45,7 @@ viewBoth :
     View model1 msg1
     -> View model2 msg2
     -> Both model1 model2
-    -> ( Html (Either msg1 msg2), Html (Either msg1 msg2) )
+    -> Both (Html (Either msg1 msg2)) (Html (Either msg1 msg2))
 viewBoth va vb ( a, b ) =
     ( Html.map Left <| va a
     , Html.map Right <| vb b
@@ -79,17 +79,17 @@ viewEach viewAt models =
 
 {-| Just an alias for @Array.fromList
 -}
-all : List a -> Array a
-all =
+initAll : List a -> Array a
+initAll =
     Array.fromList
 
 
 {-| An infix version for the @viewBoth
 -}
 (<|>) :
-    View a x
-    -> View b y
-    -> Both a b
-    -> Html (Either x y)
-(<|>) v1 v2 =
-    viewBoth v1 v2 >> \( h1, h2 ) -> Html.span [] [ h1, h2 ]
+    View model1 msg1
+    -> View model2 msg2
+    -> Both model1 model2
+    -> Both (Html (Either msg1 msg2)) (Html (Either msg1 msg2))
+(<|>) =
+    viewBoth

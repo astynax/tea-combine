@@ -53,7 +53,7 @@ view m =
         ]
 
 
-update : UpdateE Model Msg
+update : Update Model Msg
 update msg model =
     (case msg of
         Toggle ->
