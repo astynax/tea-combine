@@ -7,13 +7,21 @@ Using this library you can do this:
 ```elm
 import TeaCombine exposing (..)
 import TeaCombine.Pure exposing (..)
+import TeaCombine.Pure.Pair exposing (..)
 
 main =
     beginnerProgram
         { model = Counter.model <> CheckBox.mkModel "1" <> CheckBox.mkModel "2"
-        , view = Counter.view <|> CheckBox.view <|> CheckBox.view
+        , view = Counter.view <||> CheckBox.view <||> CheckBox.view
         , update = Counter.update <&> CheckBox.update <&> CheckBox.update
         }
+
+(<||>) v1 v2 model =
+    let
+        (h1, h2) = (v1 <|> v2) model  -- We combine two views
+                                      -- and apply combination..
+    in
+        div [] [h1, h2]               -- ..then put Htmls into container
 ```
 
 and have an app what looks like this:
