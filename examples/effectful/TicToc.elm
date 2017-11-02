@@ -3,7 +3,6 @@ module TicToc exposing (..)
 import Html exposing (Html)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (checked, type_)
-import Platform.Cmd exposing ((!))
 import Time
 
 

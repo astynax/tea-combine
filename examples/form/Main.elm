@@ -1,7 +1,6 @@
 module Main exposing (main)
 
 import Html exposing (Html)
-import Html.Attributes exposing (style)
 import TeaCombine exposing (..)
 import TeaCombine.Pure.Pair exposing (..)
 
@@ -11,6 +10,7 @@ import TeaCombine.Pure.Pair exposing (..)
 import ByteField
 import CheckBoxField
 import RGBBox exposing (..)
+import Utils
 
 
 main =
@@ -25,7 +25,7 @@ main =
                 <&> ByteField.update
                 <&> ByteField.update
                 <&> CheckBoxField.update
-        , view = view
+        , view = Utils.wrapView "Form demo" view
         }
 
 
@@ -37,8 +37,6 @@ view model =
         Html.div []
             [ viewForm model
             , RGBBox.view box
-            , Html.div [ style [ ( "font-family", "Monospace" ) ] ]
-                [ Html.text <| toString model ]
             ]
 
 

@@ -1,6 +1,5 @@
 module Main exposing (..)
 
-import Either exposing (Either)
 import Html exposing (Html, beginnerProgram)
 import String
 import Tuple
@@ -11,108 +10,79 @@ import Tuple
 import CheckBox
 import Counter
 import TeaCombine exposing (..)
-import TeaCombine.Pure exposing (..)
 import TeaCombine.Pure.Pair exposing (..)
 import TeaCombine.Pure.Many exposing (..)
-
-
-type alias Demo model msg =
-    { model : model
-    , view : View model msg
-    , update : Update model msg
-    }
+import Utils
 
 
 main =
     let
         simpleDemo =
-            demo
-                "Just aside"
-                (Counter.model <> Counter.model)
-                (Html.div []
-                    << (Counter.view <::> Counter.view)
-                )
-                (Counter.update <&> Counter.update)
+            { model = Counter.model <> Counter.model
+            , view =
+                Utils.wrapView "Just aside"
+                    (Html.div []
+                        << (Counter.view <::> Counter.view)
+                    )
+            , update = Counter.update <&> Counter.update
+            }
 
         arrayDemo =
             let
                 asUL =
                     Html.ul [] << List.map (Html.li [] << flip (::) [])
             in
-                demo
-                    "Array of same components"
-                    (initAll <|
+                { model =
+                    initAll <|
                         List.map (CheckBox.mkModel << toString) <|
                             List.range 1 5
-                    )
-                    (asUL << viewEach (always CheckBox.view))
-                    (updateEach <| always CheckBox.update)
+                , view =
+                    Utils.wrapView "Array of same components"
+                        (asUL << viewEach (always CheckBox.view))
+                , update = updateEach <| always CheckBox.update
+                }
 
         complexDemo =
-            demo
-                "Aside + Array with separate views & updates"
-                (Counter.model
+            { model =
+                Counter.model
                     <> initAll [ CheckBox.mkModel "a", CheckBox.mkModel "b" ]
                     <> Counter.model
-                )
-                (Html.div []
-                    << (Counter.view
-                            <::>
-                                (Html.span []
-                                    << viewAll
-                                        [ CheckBox.view
-                                            << Tuple.mapFirst
-                                                (\label ->
-                                                    String.concat
-                                                        [ "<", label, ">" ]
-                                                )
-                                        , CheckBox.view
-                                        ]
-                                )
-                            <:: Counter.view
-                       )
-                )
-                (Counter.update
+            , view =
+                Utils.wrapView
+                    "Aside + Array with separate views & updates"
+                    (Html.div []
+                        << (Counter.view
+                                <::>
+                                    (Html.span []
+                                        << viewAll
+                                            [ CheckBox.view
+                                                << Tuple.mapFirst
+                                                    (\label ->
+                                                        String.concat
+                                                            [ "<", label, ">" ]
+                                                    )
+                                            , CheckBox.view
+                                            ]
+                                    )
+                                <:: Counter.view
+                           )
+                    )
+            , update =
+                Counter.update
                     <&> updateAll [ CheckBox.update, CheckBox.update ]
                     <&> Counter.update
-                )
+            }
     in
-        beginnerProgram <|
-            atop simpleDemo <|
-                atop arrayDemo
-                    complexDemo
+        simpleDemo
+            |> addBelow arrayDemo
+            |> addBelow complexDemo
+            |> beginnerProgram
 
 
-demo :
-    String
-    -> model
-    -> View model msg
-    -> Update model msg
-    -> Demo model msg
-demo title model view update =
-    { model = model
+addBelow program2 program1 =
+    { model = program1.model <> program2.model
     , view =
-        \model ->
-            Html.div []
-                [ Html.h3 [] [ Html.text title ]
-                , view model
-                , Html.pre []
-                    [ Html.text "model = "
-                    , Html.text <| toString model
-                    ]
-                ]
-    , update = update
-    }
-
-
-atop :
-    Demo model1 msg1
-    -> Demo model2 msg2
-    -> Demo (Both model1 model2) (Either msg1 msg2)
-atop demo1 demo2 =
-    { model = demo1.model <> demo2.model
-    , view =
-        viewBoth demo1.view demo2.view
+        viewBoth program1.view program2.view
             >> uncurry
                 (\h1 h2 ->
                     Html.div []
@@ -121,5 +91,5 @@ atop demo1 demo2 =
                         , h2
                         ]
                 )
-    , update = demo1.update <&> demo2.update
+    , update = program1.update <&> program2.update
     }

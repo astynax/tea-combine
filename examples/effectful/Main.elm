@@ -1,57 +1,20 @@
 module Main exposing (..)
 
-import Html exposing (Html, program)
-
-
--- local imports
-
+import Html exposing (Html)
 import TeaCombine exposing (..)
-import TeaCombine.Effectful exposing (..)
 import TeaCombine.Effectful.Pair exposing (..)
 import TicToc
-
-
-type alias Demo model msg =
-    { init : ( model, Cmd msg )
-    , view : View model msg
-    , update : Update model msg
-    , subscriptions : Subscription model msg
-    }
+import Utils
 
 
 main =
-    let
-        simpleDemo =
-            demo "Pair of effectful components"
-                (TicToc.init 0.5 <> TicToc.init 0.25)
+    Html.program
+        { init = TicToc.init 0.5 <> TicToc.init 0.25
+        , view =
+            Utils.wrapView "Pair of effectful components"
                 (Html.div []
                     << (TicToc.view <::> TicToc.view)
                 )
-                (TicToc.update <&> TicToc.update)
-                (TicToc.sub <+> TicToc.sub)
-    in
-        program <| simpleDemo
-
-
-demo :
-    String
-    -> ( model, Cmd msg )
-    -> View model msg
-    -> Update model msg
-    -> Subscription model msg
-    -> Demo model msg
-demo title init view update subscriptions =
-    { init = init
-    , view =
-        \model ->
-            Html.div []
-                [ Html.h3 [] [ Html.text title ]
-                , view model
-                , Html.pre []
-                    [ Html.text "model = "
-                    , Html.text <| toString model
-                    ]
-                ]
-    , update = update
-    , subscriptions = subscriptions
-    }
+        , update = TicToc.update <&> TicToc.update
+        , subscriptions = TicToc.sub <+> TicToc.sub
+        }
