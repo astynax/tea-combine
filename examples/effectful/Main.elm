@@ -24,7 +24,9 @@ main =
         simpleDemo =
             demo "Pair of effectful components"
                 (TicToc.init 0.5 <> TicToc.init 0.25)
-                (TicToc.view <||> TicToc.view)
+                (Html.div []
+                    << (TicToc.view <::> TicToc.view)
+                )
                 (TicToc.update <&> TicToc.update)
                 (TicToc.sub <+> TicToc.sub)
     in
@@ -53,11 +55,3 @@ demo title init view update subscriptions =
     , update = update
     , subscriptions = subscriptions
     }
-
-
-(<||>) v1 v2 m =
-    let
-        ( h1, h2 ) =
-            (v1 <|> v2) m
-    in
-        Html.div [] [ h1, h2 ]

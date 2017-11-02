@@ -29,7 +29,9 @@ main =
             demo
                 "Just aside"
                 (Counter.model <> Counter.model)
-                (Counter.view <||> Counter.view)
+                (Html.div []
+                    << (Counter.view <::> Counter.view)
+                )
                 (Counter.update <&> Counter.update)
 
         arrayDemo =
@@ -39,7 +41,10 @@ main =
             in
                 demo
                     "Array of same components"
-                    (initAll <| List.map (CheckBox.mkModel << toString) <| List.range 1 5)
+                    (initAll <|
+                        List.map (CheckBox.mkModel << toString) <|
+                            List.range 1 5
+                    )
                     (asUL << viewEach (always CheckBox.view))
                     (updateEach <| always CheckBox.update)
 
@@ -50,19 +55,22 @@ main =
                     <> initAll [ CheckBox.mkModel "a", CheckBox.mkModel "b" ]
                     <> Counter.model
                 )
-                (Counter.view
-                    <||>
-                        (Html.span []
-                            << viewAll
-                                [ CheckBox.view
-                                    << Tuple.mapFirst
-                                        (\label ->
-                                            String.concat [ "<", label, ">" ]
-                                        )
-                                , CheckBox.view
-                                ]
-                        )
-                    <||> Counter.view
+                (Html.div []
+                    << (Counter.view
+                            <::>
+                                (Html.span []
+                                    << viewAll
+                                        [ CheckBox.view
+                                            << Tuple.mapFirst
+                                                (\label ->
+                                                    String.concat
+                                                        [ "<", label, ">" ]
+                                                )
+                                        , CheckBox.view
+                                        ]
+                                )
+                            <:: Counter.view
+                       )
                 )
                 (Counter.update
                     <&> updateAll [ CheckBox.update, CheckBox.update ]
@@ -115,11 +123,3 @@ atop demo1 demo2 =
                 )
     , update = demo1.update <&> demo2.update
     }
-
-
-(<||>) v1 v2 m =
-    let
-        ( h1, h2 ) =
-            (v1 <|> v2) m
-    in
-        Html.div [] [ h1, h2 ]
