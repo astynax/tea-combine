@@ -1,8 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, beginnerProgram)
-import String
-import Tuple
+import Html exposing (Html)
 
 
 -- local imports
@@ -34,34 +32,35 @@ main =
             in
                 { model =
                     initAll <|
-                        List.map (CheckBox.mkModel << toString) <|
+                        List.map (always <| CheckBox.init False) <|
                             List.range 1 5
                 , view =
                     Utils.wrapView "Array of same components"
-                        (asUL << viewEach (always CheckBox.view))
+                        (asUL
+                            << viewEach
+                                (\idx ->
+                                    Utils.labeled (toString idx)
+                                        CheckBox.view
+                                )
+                        )
                 , update = updateEach <| always CheckBox.update
                 }
 
         complexDemo =
             { model =
                 Counter.model
-                    <> initAll [ CheckBox.mkModel "a", CheckBox.mkModel "b" ]
+                    <> initAll [ CheckBox.init False, CheckBox.init False ]
                     <> Counter.model
             , view =
                 Utils.wrapView
-                    "Aside + Array with separate views & updates"
+                    "Aside + list of views"
                     (Html.div []
                         << (Counter.view
                                 <::>
                                     (Html.span []
                                         << viewAll
-                                            [ CheckBox.view
-                                                << Tuple.mapFirst
-                                                    (\label ->
-                                                        String.concat
-                                                            [ "<", label, ">" ]
-                                                    )
-                                            , CheckBox.view
+                                            [ Utils.labeled "a" CheckBox.view
+                                            , Utils.labeled "b" CheckBox.view
                                             ]
                                     )
                                 <:: Counter.view
@@ -76,7 +75,7 @@ main =
         simpleDemo
             |> addBelow arrayDemo
             |> addBelow complexDemo
-            |> beginnerProgram
+            |> Html.beginnerProgram
 
 
 addBelow program2 program1 =

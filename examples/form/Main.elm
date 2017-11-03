@@ -50,15 +50,8 @@ bindForm =
 
 viewForm =
     Html.form []
-        << (labeled "R" ByteField.view
-                <::> labeled "G" ByteField.view
-                <:: labeled "B" ByteField.view
-                <:: labeled "Rounded" CheckBoxField.view
+        << (Utils.labeled "R" ByteField.view
+                <::> Utils.labeled "G" ByteField.view
+                <:: Utils.labeled "B" ByteField.view
+                <:: Utils.labeled "Rounded" CheckBoxField.view
            )
-
-
-labeled label view model =
-    Html.label []
-        [ Html.text label
-        , view model
-        ]

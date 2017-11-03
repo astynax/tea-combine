@@ -13,3 +13,11 @@ wrapView title view model =
             , Html.text <| toString model
             ]
         ]
+
+
+labeled : String -> (model -> Html msg) -> model -> Html msg
+labeled label view model =
+    Html.label []
+        [ Html.text label
+        , view model
+        ]
