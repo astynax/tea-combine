@@ -25,7 +25,7 @@ main =
             }
 ```
 
-and have an app what looks like this:
+and have an app that looks like this:
 
 ![screenshot](https://github.com/astynax/tea-combine/blob/master/assets/example.png)
 
