@@ -9,7 +9,11 @@
     "exposed-modules": [
         "TeaCombine",
         "TeaCombine.Pure",
-        "TeaCombine.Effectful"
+        "TeaCombine.Pure.Pair",
+        "TeaCombine.Pure.Many",
+        "TeaCombine.Effectful",
+        "TeaCombine.Effectful.Pair",
+        "TeaCombine.Effectful.Many"
     ],
     "dependencies": {
         "toastal/either": "3.0.0 <= v < 4.0.0",

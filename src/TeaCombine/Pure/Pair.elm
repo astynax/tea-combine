@@ -1,4 +1,18 @@
-module TeaCombine.Pure.Pair exposing (..)
+module TeaCombine.Pure.Pair
+    exposing
+        ( initWith
+        , (<>)
+        , updateWith
+        , (<&>)
+        )
+
+{-| Combinators for work with pure programs (those doesn't use @Cmd and @Sub).
+
+TODO: add some great docs
+
+@docs initWith, (<>), updateWith, (<&>)
+
+-}
 
 import Either exposing (Either(..))
 import Tuple
@@ -6,7 +20,7 @@ import TeaCombine exposing (Both)
 import TeaCombine.Pure exposing (Update)
 
 
-{-| Inits one model with another
+{-| Inits two sub-models as pair.
 -}
 initWith :
     model2
@@ -16,7 +30,7 @@ initWith =
     flip (,)
 
 
-{-| An infix alias for @initWith
+{-| An infix alias for @initWith.
 -}
 (<>) :
     model1
@@ -26,7 +40,7 @@ initWith =
     (,)
 
 
-{-| Updates one of two submodels using corresponding subupdate function
+{-| Updates one of two sub-models using corresponding sub-update function.
 -}
 updateWith :
     Update model2 msg2
@@ -36,7 +50,7 @@ updateWith u2 u1 =
     Either.unpack (Tuple.mapFirst << u1) (Tuple.mapSecond << u2)
 
 
-{-| An infix alias for @updateBoth
+{-| An infix alias for @updateBoth.
 -}
 (<&>) :
     Update model1 msg1

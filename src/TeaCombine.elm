@@ -17,7 +17,9 @@ module TeaCombine
         , thenBind
         )
 
-{-| FIXME: fill the docs
+{-| The common types and combinators.
+
+TODO: add some great docs.
 
 @docs View, Both, Ix
 @docs initAll
@@ -32,32 +34,32 @@ import Either exposing (Either(..))
 import Html exposing (Html)
 
 
-{-| Alias for the view function
+{-| An alias for the view function.
 -}
 type alias View model msg =
     model -> Html msg
 
 
-{-| Alias for the pair of things (product of two types)
+{-| An alias for the pair of things (product of two types).
 -}
 type alias Both a b =
     ( a, b )
 
 
-{-| Wrapper type that adds an index
+{-| Wrapper type that adds an index.
 -}
 type Ix a
     = Ix Int a
 
 
-{-| Just an alias for @Array.fromList
+{-| Just an alias for @Array.fromList (made for convinience).
 -}
 initAll : List a -> Array a
 initAll =
     Array.fromList
 
 
-{-| Combine two sub-views into a pair (@Both)
+{-| Combines two sub-views into a pair (@Both).
 -}
 viewBoth :
     View model1 msg1
@@ -70,7 +72,7 @@ viewBoth v1 v2 ( m1, m2 ) =
     )
 
 
-{-| An infix version for the @viewBoth
+{-| An infix version for the @viewBoth.
 -}
 (<|>) :
     View model1 msg1
@@ -81,8 +83,8 @@ viewBoth v1 v2 ( m1, m2 ) =
     viewBoth
 
 
-{-| Returns a list of @Html produced by applying a number
-of sub-views to sub-models
+{-| Returns a list of @Html produced by applying a @List of sub-views
+to the @List of sub-models (like @List.zip does).
 -}
 viewAll :
     List (View model msg)
@@ -94,8 +96,8 @@ viewAll views models =
         |> List.indexedMap (Html.map << Ix)
 
 
-{-| Returns a list of @Html produced by applying an index-dependent view
-to the sub-models
+{-| Returns a list of @Html produced by applying an index-aware view
+to the each of sub-models.
 -}
 viewEach :
     (Int -> View model msg)
@@ -110,7 +112,7 @@ viewEach viewAt models =
             )
 
 
-{-| Works as @viewEach but returns only some of sub-views
+{-| Works as @viewEach but returns only some of sub-views.
 -}
 viewSome :
     (Int -> Maybe (View model msg))
@@ -141,7 +143,7 @@ joinViews v1 v2 m =
     in
         [ h1, h2 ]
 
-{-| An infix alias for @joinViews
+{-| An infix alias for @joinViews.
  -}
 (<::>) :
       View model1 msg1
@@ -152,7 +154,7 @@ joinViews v1 v2 m =
     joinViews
 
 
-{-| Continues a "joinViews+[withView]" chain by adding an another sub-view
+{-| Continues a "joinViews+[withView]" chain by adding an another sub-view.
  -}
 withView :
     View model2 msg2
@@ -164,7 +166,7 @@ withView v2 hs ( m1, m2 ) =
         (List.map (Html.map Left) <| hs m1)
         [ Html.map Right <| v2 m2 ]
 
-{-| An infix alias for @withView
+{-| An infix alias for @withView.
  -}
 (<::) :
     (model1 -> List (Html msg1))

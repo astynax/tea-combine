@@ -1,16 +1,18 @@
 module TeaCombine.Effectful.Pair
     exposing
-        ( initBoth
-        , updateBoth
-        , subscribeBoth
+        ( initWith
+        , updateWith
+        , subscribeWith
         , (<>)
         , (<&>)
         , (<+>)
         )
 
-{-| FIXME: fill the docs
+{-| Combinators for work with effectful programs (those use @Cms and @Sub).
 
-@docs initBoth, updateBoth, subscribeBoth, (<>), (<&>), (<+>)
+TODO: add some great docs.
+
+@docs initWith, updateWith, subscribeWith, (<>), (<&>), (<+>)
 
 -}
 
@@ -21,13 +23,13 @@ import TeaCombine exposing (Both)
 import TeaCombine.Effectful exposing (Subscription, Update)
 
 
-{-| Inits both models (with Cmds)
+{-| Inits both models (with Cmds).
 -}
-initBoth :
-    ( model1, Cmd msg1 )
-    -> ( model2, Cmd msg2 )
+initWith :
+    ( model2, Cmd msg2 )
+    -> ( model1, Cmd msg1 )
     -> ( Both model1 model2, Cmd (Either msg1 msg2) )
-initBoth ( m1, c1 ) ( m2, c2 ) =
+initWith ( m2, c2 ) ( m1, c1 ) =
     ( m1, m2 )
         ! [ Cmd.batch
                 [ Cmd.map Left c1
@@ -36,13 +38,23 @@ initBoth ( m1, c1 ) ( m2, c2 ) =
           ]
 
 
-{-| Updates one of two submodels using corresponding subupdate function
+{-| An infix alias for @initWith.
 -}
-updateBoth :
-    Update model1 msg1
-    -> Update model2 msg2
+(<>) :
+    ( model1, Cmd msg1 )
+    -> ( model2, Cmd msg2 )
+    -> ( Both model1 model2, Cmd (Either msg1 msg2) )
+(<>) =
+    flip initWith
+
+
+{-| Updates one of two submodels using corresponding subupdate function.
+-}
+updateWith :
+    Update model2 msg2
+    -> Update model1 msg1
     -> Update (Both model1 model2) (Either msg1 msg2)
-updateBoth ul ur =
+updateWith u2 u1 =
     let
         applyL f m =
             Tuple.mapFirst (f m)
@@ -52,47 +64,37 @@ updateBoth ul ur =
             Tuple.mapSecond (f m)
                 >> (\( x, ( y, c ) ) -> ( x, y ) ! [ Cmd.map Right c ])
     in
-        Either.unpack (applyL ul) (applyR ur)
+        Either.unpack (applyL u1) (applyR u2)
 
 
-{-| Merges two subscriptions
--}
-subscribeBoth :
-    Subscription model1 msg1
-    -> Subscription model2 msg2
-    -> Subscription (Both model1 model2) (Either msg1 msg2)
-subscribeBoth s1 s2 ( m1, m2 ) =
-    Sub.batch
-        [ Sub.map Left <| s1 m1
-        , Sub.map Right <| s2 m2
-        ]
-
-
-{-| An infix alias for @updateBoth
+{-| An infix alias for @updateWith.
 -}
 (<&>) :
     Update model1 msg1
     -> Update model2 msg2
     -> Update (Both model1 model2) (Either msg1 msg2)
 (<&>) =
-    updateBoth
+    flip updateWith
 
 
-{-| An infix alias for @initBoth
+{-| Combines two subscriptions.
 -}
-(<>) :
-    ( model1, Cmd msg1 )
-    -> ( model2, Cmd msg2 )
-    -> ( Both model1 model2, Cmd (Either msg1 msg2) )
-(<>) =
-    initBoth
+subscribeWith :
+    Subscription model2 msg2
+    -> Subscription model1 msg1
+    -> Subscription (Both model1 model2) (Either msg1 msg2)
+subscribeWith s2 s1 ( m1, m2 ) =
+    Sub.batch
+        [ Sub.map Left <| s1 m1
+        , Sub.map Right <| s2 m2
+        ]
 
 
-{-| An infix alias for @subscribeBoth
+{-| An infix alias for @subscribeWith.
 -}
 (<+>) :
     Subscription model1 msg1
     -> Subscription model2 msg2
     -> Subscription (Both model1 model2) (Either msg1 msg2)
 (<+>) =
-    subscribeBoth
+    flip subscribeWith

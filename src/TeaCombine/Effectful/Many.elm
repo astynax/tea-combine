@@ -4,7 +4,10 @@ module TeaCombine.Effectful.Many
         , updateAll
         )
 
-{-| FIXME: fill the docs!
+{-| Combinators those help to work with homogenous sets of sub-models
+(in a form of @Array).
+
+TODO: add some great docs.
 
 @docs updateEach, updateAll
 
@@ -16,8 +19,8 @@ import TeaCombine exposing (Ix(..))
 import TeaCombine.Effectful exposing (Subscription, Update)
 
 
-{-| Updates one of submodels in array using corresponding (by index)
-update function
+{-| Updates each sub-model in @Array using a function
+from sub-model index to sub-update.
 -}
 updateEach :
     (Int -> Update model msg)
@@ -32,7 +35,7 @@ updateEach updateAt (Ix idx msg) models =
         |> Maybe.withDefault (models ! [])
 
 
-{-| Updates one of submodels using a corresponding update function from the list
+{-| Updates an @Array of sub-models using a @List of sub-updates.
 -}
 updateAll :
     List (Update model msg)
