@@ -15,6 +15,10 @@ module TeaCombine
         , (<::)
         , bind
         , thenBind
+        , oneOfViews
+        , orView
+        , oneOfPaths
+        , orPath
         )
 
 {-| The common types and combinators.
@@ -26,6 +30,7 @@ TODO: add some great docs.
 @docs viewBoth, (<|>), viewAll, viewEach, viewSome
 @docs joinViews, (<::>), withView, (<::)
 @docs bind, thenBind
+@docs oneOfViews, orView, oneOfPaths, orPath
 
 -}
 
@@ -52,14 +57,14 @@ type Ix a
     = Ix Int a
 
 
-{-| Just an alias for @Array.fromList (made for convinience).
+{-| Just an alias for [Array.fromList](Array#fromList) (made for convinience).
 -}
 initAll : List a -> Array a
 initAll =
     Array.fromList
 
 
-{-| Combines two sub-views into a pair (@Both).
+{-| Combines two sub-views into a pair ([Both](#Both)).
 -}
 viewBoth :
     View model1 msg1
@@ -72,7 +77,7 @@ viewBoth v1 v2 ( m1, m2 ) =
     )
 
 
-{-| An infix version for the @viewBoth.
+{-| An infix version for the [viewBoth](#viewBoth).
 -}
 (<|>) :
     View model1 msg1
@@ -83,8 +88,8 @@ viewBoth v1 v2 ( m1, m2 ) =
     viewBoth
 
 
-{-| Returns a list of @Html produced by applying a @List of sub-views
-to the @List of sub-models (like @List.zip does).
+{-| Returns a list of [Html](Html#Html) produced by applying a `List`
+of sub-views to the `List` of sub-models (like [List.zip](List#zip) does).
 -}
 viewAll :
     List (View model msg)
@@ -96,8 +101,8 @@ viewAll views models =
         |> List.indexedMap (Html.map << Ix)
 
 
-{-| Returns a list of @Html produced by applying an index-aware view
-to the each of sub-models.
+{-| Returns a list of [Html](Html#Html) produced by applying
+an index-aware view to the each of sub-models.
 -}
 viewEach :
     (Int -> View model msg)
@@ -112,7 +117,7 @@ viewEach viewAt models =
             )
 
 
-{-| Works as @viewEach but returns only some of sub-views.
+{-| Works as [viewEach](#viewEach) but returns only some of sub-views.
 -}
 viewSome :
     (Int -> Maybe (View model msg))
@@ -128,9 +133,11 @@ viewSome viewAt models =
         |> List.filterMap identity
 
 
-{-| Works as @viewBoth but returns a function that produces a list of sub-views.
-This is a first step of "joinViews+[withView]" chain.
- -}
+{-| Works as [viewBoth](#viewBoth) but returns a function that produces a
+`List` of sub-views.
+
+ This is a first step of *"joinViews+[withView]" chain*.
+-}
 joinViews :
     View model1 msg1
     -> View model2 msg2
@@ -143,10 +150,11 @@ joinViews v1 v2 m =
     in
         [ h1, h2 ]
 
-{-| An infix alias for @joinViews.
- -}
+
+{-| An infix alias for [joinViews](#joinViews).
+-}
 (<::>) :
-      View model1 msg1
+    View model1 msg1
     -> View model2 msg2
     -> Both model1 model2
     -> List (Html (Either msg1 msg2))
@@ -154,8 +162,8 @@ joinViews v1 v2 m =
     joinViews
 
 
-{-| Continues a "joinViews+[withView]" chain by adding an another sub-view.
- -}
+{-| Adds an another step to the *"joinViews+[withView]" chain*.
+-}
 withView :
     View model2 msg2
     -> (model1 -> List (Html msg1))
@@ -166,8 +174,9 @@ withView v2 hs ( m1, m2 ) =
         (List.map (Html.map Left) <| hs m1)
         [ Html.map Right <| v2 m2 ]
 
-{-| An infix alias for @withView.
- -}
+
+{-| An infix alias for [withView](#withView).
+-}
 (<::) :
     (model1 -> List (Html msg1))
     -> View model2 msg2
@@ -176,10 +185,12 @@ withView v2 hs ( m1, m2 ) =
 (<::) =
     flip withView
 
+
 {-| Makes a function that applies a getter to the model and
 then modifies result.
-This is a first step in a "bind+[thenBind]"-chain.
- -}
+
+This is a first step in the *"bind+[thenBind]"-chain*.
+-}
 bind :
     (a -> b)
     -> (model -> a)
@@ -188,8 +199,9 @@ bind :
 bind use get =
     use << get
 
-{-| Adds an another step to the "bind+[thenBind]"-chain.
- -}
+
+{-| Adds an another step to the *"bind+[thenBind]"-chain*.
+-}
 thenBind :
     (model2 -> a)
     -> (model1 -> (a -> b))
@@ -197,3 +209,57 @@ thenBind :
     -> b
 thenBind get use ( m1, m2 ) =
     use m1 (get m2)
+
+
+{-| Combines two views and lets to select (using path)
+which one should be applied to the combined model.
+
+This is a first step in a *"oneOfViews+[orView]"-chain*.
+-}
+oneOfViews :
+    View model1 msg1
+    -> View model2 msg2
+    -> Either () ()
+    -> View (Both model1 model2) (Either msg1 msg2)
+oneOfViews v1 v2 path ( m1, m2 ) =
+    case path of
+        Left () ->
+            Html.map Left <| v1 m1
+
+        Right () ->
+            Html.map Right <| v2 m2
+
+{-| Adds an another view to the *"oneOfViews+[orView]"-chain*.
+-}
+orView :
+    View model2 msg2
+    -> (path -> model1 -> Html msg1)
+    -> Either path ()
+    -> View (Both model1 model2) (Either msg1 msg2)
+orView v2 next path ( m1, m2 ) =
+    case path of
+        Left p ->
+            Html.map Left <| next p m1
+
+        Right () ->
+            Html.map Right <| v2 m2
+
+
+{-| Combines two path labels.
+
+This is a first step in the *"oneOfViews+[orView]"-chain*.
+ -}
+oneOfPaths : a -> a -> List ( a, Either () () )
+oneOfPaths v1 v2 =
+    [ ( v1, Left () )
+    , ( v2, Right () )
+    ]
+
+
+{-| Adds an another path label to the *"oneOfPaths+[orPath]"-chain*.
+-}
+orPath : a -> List ( a, b ) -> List ( a, Either b () )
+orPath v ps =
+    List.append
+        (List.map (Tuple.mapSecond Left) ps)
+        [ ( v, Right () ) ]
