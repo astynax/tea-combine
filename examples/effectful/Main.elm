@@ -1,5 +1,6 @@
-module Main exposing (..)
+module Main exposing (main)
 
+import Browser
 import Html exposing (Html)
 import TeaCombine exposing (..)
 import TeaCombine.Effectful.Pair exposing (..)
@@ -8,13 +9,13 @@ import Utils
 
 
 main =
-    Html.program
-        { init = TicToc.init 0.5 <> TicToc.init 0.25
+    Browser.element
+        { init = TicToc.init 500 |> initWith (TicToc.init 250)
         , view =
             Utils.wrapView "Pair of effectful components"
                 (Html.div []
-                    << (TicToc.view <::> TicToc.view)
+                    << (joinViews TicToc.view TicToc.view)
                 )
-        , update = TicToc.update <&> TicToc.update
-        , subscriptions = TicToc.sub <+> TicToc.sub
+        , update = TicToc.update |> updateWith TicToc.update
+        , subscriptions = TicToc.sub |> subscribeWith TicToc.sub
         }

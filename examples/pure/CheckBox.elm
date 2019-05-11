@@ -1,4 +1,4 @@
-module CheckBox exposing (..)
+module CheckBox exposing (Model, Msg, init, update, view)
 
 import Html exposing (Html)
 import Html.Attributes exposing (checked, type_)

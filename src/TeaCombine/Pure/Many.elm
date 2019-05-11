@@ -1,8 +1,4 @@
-module TeaCombine.Pure.Many
-    exposing
-        ( updateEach
-        , updateAll
-        )
+module TeaCombine.Pure.Many exposing (updateEach, updateAll)
 
 {-| Combinators those help to work with homogenous sets of sub-models
 (in a form of @Array).
@@ -10,6 +6,7 @@ module TeaCombine.Pure.Many
 TODO: add some great docs
 
 @docs updateEach, updateAll
+
 -}
 
 import Array exposing (Array)
@@ -25,7 +22,7 @@ updateEach :
     -> Update (Array model) (Ix msg)
 updateEach updateAt (Ix idx msg) models =
     Array.get idx models
-        |> Maybe.map (flip (Array.set idx) models << updateAt idx msg)
+        |> Maybe.map ((\x -> Array.set idx x models) << updateAt idx msg)
         |> Maybe.withDefault models
 
 
@@ -40,7 +37,7 @@ updateAll updates =
             Array.fromList updates
 
         updateAt idx =
-            Maybe.withDefault (flip always)
+            Maybe.withDefault (\_ y -> y)
                 (Array.get idx uarr)
     in
-        updateEach updateAt
+    updateEach updateAt

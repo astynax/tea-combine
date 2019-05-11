@@ -1,36 +1,35 @@
 module Main exposing (main)
 
-import Either exposing (Either(..))
-import Html exposing (Html)
-import Html.Attributes exposing (type_, checked)
-import Html.Events exposing (onClick)
-import TeaCombine exposing (..)
-import TeaCombine.Pure.Pair exposing (..)
-
-
 -- local imports
 
+import Browser
+import Either exposing (Either(..))
+import Html exposing (Html)
+import Html.Attributes exposing (checked, type_)
+import Html.Events exposing (onClick)
 import TabControl
+import TeaCombine exposing (..)
+import TeaCombine.Pure.Pair exposing (..)
 import Utils
 
 
 main =
-    Html.beginnerProgram
-        { model =
+    Browser.sandbox
+        { init =
             -- each page can have own type of state:
             "Foo"
-                <> Just "Bar"
-                <> 42
-                <> False
+                |> initWith (Just "Bar")
+                |> initWith 42
+                |> initWith False
                 -- path to the current page (now it points to the last page):
-                <> Right ()
+                |> initWith (Right ())
         , update =
             always identity
-                <&> always identity
-                <&> always identity
-                <&> always not
+                |> updateWith (always identity)
+                |> updateWith (always identity)
+                |> updateWith (always not)
                 -- this update function updates a page selection (path):
-                <&> always
+                |> updateWith always
         , view =
             Utils.wrapView "Pages" view
         }
@@ -73,7 +72,7 @@ view ( model, path ) =
                 path
                 model
     in
-        Html.div []
-            [ Html.map Right tabs
-            , Html.map Left page
-            ]
+    Html.div []
+        [ Html.map Right tabs
+        , Html.map Left page
+        ]

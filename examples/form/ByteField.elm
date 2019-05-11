@@ -1,5 +1,6 @@
-module ByteField exposing (init, view, update, getValue)
+module ByteField exposing (getValue, init, update, view)
 
+import Debug
 import Html exposing (Html)
 import Html.Attributes exposing (style, type_, value)
 import Html.Events exposing (onInput)
@@ -19,39 +20,41 @@ type alias Msg =
 
 init : Int -> Model
 init v =
-    { input = toString v, value = Just v }
+    { input = Debug.toString v, value = Just v }
 
 
 view : Model -> Html Msg
 view model =
     Html.input
-        [ type_ "number"
-        , onInput identity
-        , value model.input
-        , style <|
-            List.append [ ( "width", "40px" ) ] <|
-                Maybe.withDefault [ ( "background-color", "red" ) ] <|
-                    Maybe.map (always []) <|
-                        model.value
-        ]
+        (List.append
+            [ type_ "number"
+            , onInput identity
+            , value model.input
+            , style "width" "40px"
+            ]
+         <|
+            Maybe.withDefault [ style "background-color" "red" ] <|
+                Maybe.map (always []) <|
+                    model.value
+        )
         []
 
 
 update : Msg -> Model -> Model
-update v _ =
+update newValue _ =
     let
-        bound v =
-            if v < 0 || v > 255 then
+        bound value =
+            if value < 0 || value > 255 then
                 Nothing
+
             else
-                Just v
+                Just value
     in
-        { input = v
-        , value =
-            String.toInt v
-                |> Result.toMaybe
-                |> Maybe.andThen bound
-        }
+    { input = newValue
+    , value =
+        String.toInt newValue
+            |> Maybe.andThen bound
+    }
 
 
 getValue : Model -> Maybe Int

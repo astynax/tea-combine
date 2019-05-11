@@ -1,8 +1,4 @@
-module TeaCombine.Effectful
-    exposing
-        ( Update
-        , Subscription
-        )
+module TeaCombine.Effectful exposing (Update, Subscription)
 
 {-| A common types for the effectful cominators.
 

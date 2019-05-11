@@ -1,5 +1,6 @@
-module Counter exposing (..)
+module Counter exposing (Model, Msg, model, update, view)
 
+import Debug
 import Html exposing (..)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
@@ -20,21 +21,19 @@ model =
 
 
 view : View Model Msg
-view model =
+view m =
     let
         btn val lbl =
             button [ onClick val ] [ text lbl ]
     in
-        span
-            [ style
-                [ ( "border", "2px outset" )
-                , ( "padding", "2px" )
-                ]
-            ]
-            [ btn (model - 1) "-"
-            , text <| toString model
-            , btn (model + 1) "+"
-            ]
+    span
+        [ style "border" "2px outset"
+        , style "padding" "2px"
+        ]
+        [ btn (m - 1) "-"
+        , text <| Debug.toString m
+        , btn (m + 1) "+"
+        ]
 
 
 update : Msg -> Model -> Model

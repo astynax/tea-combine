@@ -1,7 +1,4 @@
-module TeaCombine.Pure
-    exposing
-        ( Update
-        )
+module TeaCombine.Pure exposing (Update)
 
 {-| A common stuff for the pure combinators.
 

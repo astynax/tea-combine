@@ -1,30 +1,29 @@
 module Main exposing (main)
 
-import Html exposing (Html)
-import TeaCombine exposing (..)
-import TeaCombine.Pure.Pair exposing (..)
-
-
 -- local imports
 
+import Browser
 import ByteField
 import CheckBoxField
+import Html exposing (Html)
 import RGBBox exposing (..)
+import TeaCombine exposing (..)
+import TeaCombine.Pure.Pair exposing (..)
 import Utils
 
 
 main =
-    Html.beginnerProgram
-        { model =
+    Browser.sandbox
+        { init =
             ByteField.init 80
-                <> ByteField.init 160
-                <> ByteField.init 240
-                <> CheckBoxField.init True
+                |> initWith (ByteField.init 160)
+                |> initWith (ByteField.init 240)
+                |> initWith (CheckBoxField.init True)
         , update =
             ByteField.update
-                <&> ByteField.update
-                <&> ByteField.update
-                <&> CheckBoxField.update
+                |> updateWith ByteField.update
+                |> updateWith ByteField.update
+                |> updateWith CheckBoxField.update
         , view = Utils.wrapView "Form demo" view
         }
 
@@ -34,10 +33,11 @@ view model =
         box =
             bindForm model
     in
-        Html.div []
-            [ viewForm model
-            , RGBBox.view box
-            ]
+    Html.div
+        []
+        [ viewForm model
+        , RGBBox.view box
+        ]
 
 
 bindForm =
@@ -50,8 +50,8 @@ bindForm =
 
 viewForm =
     Html.form []
-        << (Utils.labeled "R" ByteField.view
-                <::> Utils.labeled "G" ByteField.view
-                <:: Utils.labeled "B" ByteField.view
-                <:: Utils.labeled "Rounded" CheckBoxField.view
+        << (joinViews (Utils.labeled "R" ByteField.view)
+                (Utils.labeled "G" ByteField.view)
+                |> withView (Utils.labeled "B" ByteField.view)
+                |> withView (Utils.labeled "Rounded" CheckBoxField.view)
            )
