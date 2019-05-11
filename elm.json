@@ -1,9 +1,9 @@
 {
     "type": "package",
     "name": "astynax/tea-combine",
-    "summary": "Combinator library for \\\"The Elm Arcitecture\\\"-powered applications",
+    "summary": "Combinator library for \\\\\\\"The Elm Arcitecture\\\\\\\"-powered applications",
     "license": "MIT",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "exposed-modules": [
         "TeaCombine",
         "TeaCombine.Pure",
