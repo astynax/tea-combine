@@ -4,7 +4,7 @@ module TeaCombine.Effectful.Pair exposing (initWith, updateWith, subscribeWith)
 
 TODO: add some great docs.
 
-@docs initWith, updateWith, subscribeWith, (<>), (<&>), (<+>)
+@docs initWith, updateWith, subscribeWith
 
 -}
 

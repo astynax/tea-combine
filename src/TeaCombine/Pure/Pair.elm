@@ -4,7 +4,7 @@ module TeaCombine.Pure.Pair exposing (initWith, updateWith)
 
 TODO: add some great docs
 
-@docs initWith, (<>), updateWith, (<&>)
+@docs initWith, updateWith
 
 -}
 

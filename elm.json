@@ -1,13 +1,9 @@
 {
-    "name": "astynax/tea-combine",
-    "summary": "Combinator library for \"The Elm Arcitecture\"-powered applications",
-    "repository": "https://github.com/astynax/tea-combine.git",
-    "license": "MIT",
     "type": "package",
+    "name": "astynax/tea-combine",
+    "summary": "Combinator library for \\\"The Elm Arcitecture\\\"-powered applications",
+    "license": "MIT",
     "version": "2.0.0",
-    "source-directories": [
-        "src"
-    ],
     "exposed-modules": [
         "TeaCombine",
         "TeaCombine.Pure",
@@ -24,6 +20,5 @@
         "elm/html": "1.0.0 <= v < 1.1.0",
         "toastal/either": "3.5.1 <= v < 3.6.0"
     },
-    "test-dependencies": {
-    }
+    "test-dependencies": {}
 }
