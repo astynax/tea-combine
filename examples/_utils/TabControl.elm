@@ -3,10 +3,11 @@ module TabControl exposing (tabControl)
 import Html exposing (Html)
 import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
+import List.Nonempty as NE exposing (Nonempty)
 
 
-tabControl : msg -> List ( String, msg ) -> Html msg
-tabControl current =
+tabControl : Nonempty ( String, msg ) -> msg -> Html msg
+tabControl all current =
     let
         item ( text, msg ) =
             Html.div
@@ -27,4 +28,4 @@ tabControl current =
                 ]
                 [ Html.text text ]
     in
-    Html.div [] << List.map item
+    Html.div [] <| NE.toList <| NE.map item all

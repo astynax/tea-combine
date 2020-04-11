@@ -5,6 +5,7 @@ module TeaCombine exposing
     , joinViews, withView
     , bind, thenBind
     , oneOfViews, orView, oneOfPaths, orPath
+    , eitherView
     )
 
 {-| The common types and combinators.
@@ -17,12 +18,14 @@ TODO: add some great docs.
 @docs joinViews, withView
 @docs bind, thenBind
 @docs oneOfViews, orView, oneOfPaths, orPath
+@docs eitherView
 
 -}
 
 import Array exposing (Array)
 import Either exposing (Either(..))
 import Html exposing (Html)
+import List.Nonempty as NE exposing (Nonempty)
 
 
 {-| An alias for the view function.
@@ -167,7 +170,7 @@ thenBind get use ( m1, m2 ) =
 
 
 {-| Combines two views and lets to select (using path)
-which one should be applied to the combined model.
+which one should be applied to the PRODUCT of models.
 
 This is a first step in a _"oneOfViews+[orView]"-chain_.
 
@@ -190,7 +193,7 @@ oneOfViews v1 v2 path ( m1, m2 ) =
 -}
 orView :
     View model2 msg2
-    -> (path -> model1 -> Html msg1)
+    -> (path -> View model1 msg1)
     -> Either path ()
     -> View (Both model1 model2) (Either msg1 msg2)
 orView v2 next path ( m1, m2 ) =
@@ -204,20 +207,35 @@ orView v2 next path ( m1, m2 ) =
 
 {-| Combines two path labels.
 
-This is a first step in the _"oneOfViews+[orView]"-chain_.
+This is a first step in the _"oneOfPaths+[orPath]"-chain_.
 
 -}
-oneOfPaths : a -> a -> List ( a, Either () () )
+oneOfPaths : a -> a -> Nonempty ( a, Either () () )
 oneOfPaths v1 v2 =
-    [ ( v1, Left () )
-    , ( v2, Right () )
-    ]
+    NE.cons ( v1, Left () ) <|
+        NE.fromElement ( v2, Right () )
 
 
 {-| Adds an another path label to the _"oneOfPaths+[orPath]"-chain_.
 -}
-orPath : a -> List ( a, b ) -> List ( a, Either b () )
+orPath : a -> Nonempty ( a, b ) -> Nonempty ( a, Either b () )
 orPath v ps =
-    List.append
-        (List.map (Tuple.mapSecond Left) ps)
-        [ ( v, Right () ) ]
+    NE.append
+        (NE.map (Tuple.mapSecond Left) ps)
+    <|
+        NE.fromElement ( v, Right () )
+
+
+{-| Combines two views into view for the SUM of models.
+-}
+eitherView :
+    View model2 msg2
+    -> View model1 msg1
+    -> View (Either model1 model2) (Either msg1 msg2)
+eitherView v2 v1 m =
+    case m of
+        Left m1 ->
+            Html.map Left <| v1 m1
+
+        Right m2 ->
+            Html.map Right <| v2 m2

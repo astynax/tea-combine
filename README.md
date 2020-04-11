@@ -40,3 +40,4 @@ Examples (sources you can find [here](https://github.com/astynax/tea-combine/tre
 - [one with Effectful combinators](https://astynax.github.com/tea-combine/examples/effectful.html),
 - [one with form & binding](https://astynax.github.com/tea-combine/examples/form.html)
 - [one with multi-page layout](https://astynax.github.com/tea-combine/examples/pages.html)
+- [one with multi-page layout (with state reset on tab switch)](https://astynax.github.com/tea-combine/examples/xor_pages.html)

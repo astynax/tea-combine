@@ -1,15 +1,17 @@
 {
     "type": "package",
     "name": "astynax/tea-combine",
-    "summary": "Combinator library for \\\\\\\"The Elm Arcitecture\\\\\\\"-powered applications",
+    "summary": "Combinator library for TEA-powered applications",
     "license": "MIT",
-    "version": "2.0.1",
+    "version": "3.0.0",
     "exposed-modules": [
         "TeaCombine",
         "TeaCombine.Pure",
+        "TeaCombine.Pure.Either",
         "TeaCombine.Pure.Pair",
         "TeaCombine.Pure.Many",
         "TeaCombine.Effectful",
+        "TeaCombine.Effectful.Either",
         "TeaCombine.Effectful.Pair",
         "TeaCombine.Effectful.Many"
     ],
@@ -18,6 +20,7 @@
         "elm/browser": "1.0.1 <= v < 1.1.0",
         "elm/core": "1.0.2 <= v < 1.1.0",
         "elm/html": "1.0.0 <= v < 1.1.0",
+        "mgold/elm-nonempty-list": "4.1.0 <= v < 5.0.0",
         "toastal/either": "3.5.1 <= v < 3.6.0"
     },
     "test-dependencies": {}
