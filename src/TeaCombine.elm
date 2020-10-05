@@ -1,7 +1,7 @@
 module TeaCombine exposing
     ( View, Both, Ix(..)
     , initAll
-    , viewBoth, viewAll, viewEach, viewSome
+    , viewBoth, viewAll, viewEach, viewSome, viewEvery
     , joinViews, withView
     , bind, thenBind
     , oneOfViews, orView, oneOfPaths, orPath
@@ -77,6 +77,18 @@ viewAll views models =
     Array.toList models
         |> List.map2 (<|) views
         |> List.indexedMap (Html.map << Ix)
+
+
+{-| Returns a list of [Html](Html#Html) produced by applying a
+sub-view to the `List` of sub-models (like [List.map](List#map) does).
+-}
+viewEvery :
+    View model msg
+    -> Array model
+    -> List (Html (Ix msg))
+viewEvery view models =
+    Array.toList models
+        |> List.indexedMap (\idx -> Html.map (Ix idx) << view)
 
 
 {-| Returns a list of [Html](Html#Html) produced by applying
