@@ -11,7 +11,7 @@ import List
 import Maybe
 import TeaCombine exposing (Both, View, viewBoth)
 import TeaCombine.Pure exposing (Update)
-import TeaCombine.Pure.Pair exposing (updateWith)
+import TeaCombine.Pure.Pair exposing (initWith, updateWith)
 import Utils
 
 
@@ -22,7 +22,9 @@ import Utils
    It has a Counter and a Forest of subtrees, and it draws the former
    above the latter.
 
-   It /has/ to be non-alias, because recursive types aliases are not supported.
+   Elm can not infer the infinite types like `Both a (Many (Both a (Many ...)))`.
+   You are need to provide an auxiliary type, that will help it to "untie"
+   the recursion in types (but will keep recursion in values!).
 -}
 
 
@@ -34,7 +36,7 @@ type Tree
 {-
    This is a message to Tree. It targets one of tree's subcomponents.
 
-   It has to be non-alias for the same reason Tree has to be.
+   This is an another "unying type" (see above).
 -}
 
 
@@ -56,16 +58,23 @@ view =
 
 update : Update Tree Msg
 update (Msg msg) (Node payload) =
-    payload
-        |> updateWith (Forest.update update) Counter.update msg
+    let
+        updateTree =
+            Counter.update
+                |> updateWith (Forest.update update)
+    in
+    updateTree
+        msg
+        payload
         |> Node
 
 
-node c f =
-    Node ( c, Forest.init f )
-
-
+init : Tree
 init =
+    let
+        node c f =
+            Counter.init c |> initWith (Forest.init f) |> Node
+    in
     node 0
         [ node 1 []
         , node 2

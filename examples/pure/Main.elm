@@ -16,7 +16,7 @@ import Utils
 main =
     let
         simpleDemo =
-            { init = Counter.model |> initWith Counter.model
+            { init = Counter.init 0 |> initWith (Counter.init 0)
             , view =
                 Utils.wrapView "Just aside"
                     (Html.div []
@@ -48,14 +48,14 @@ main =
 
         complexDemo =
             { init =
-                Counter.model
+                Counter.init 0
                     |> initWith
                         (initAll
                             [ CheckBox.init False
                             , CheckBox.init False
                             ]
                         )
-                    |> initWith Counter.model
+                    |> initWith (Counter.init 0)
             , view =
                 Utils.wrapView
                     "Aside + list of views"

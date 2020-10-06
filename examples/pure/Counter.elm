@@ -1,4 +1,4 @@
-module Counter exposing (Model, Msg, model, update, view)
+module Counter exposing (Model, Msg, init, update, view)
 
 import Debug
 import Html exposing (..)
@@ -15,9 +15,9 @@ type alias Msg =
     Int
 
 
-model : Model
-model =
-    0
+init : Int -> Model
+init =
+    identity
 
 
 view : View Model Msg

@@ -11,7 +11,7 @@ import TeaCombine.Pure.Pair exposing (..)
 main =
     Browser.sandbox
         { init =
-            Counter.model
+            Counter.init 0
                 |> initWith (CheckBox.init False)
                 |> initWith (CheckBox.init False)
         , view =
