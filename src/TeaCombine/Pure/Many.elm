@@ -26,6 +26,8 @@ updateEach updateAt (Ix idx msg) models =
         |> Maybe.withDefault models
 
 
+{-| Updates a sub-model with given index in @Array using a sub-update.
+-}
 updateByIndex :
     Update model msg
     -> Update (Array model) (Ix msg)
