@@ -43,13 +43,15 @@ type Msg
 
 
 view : View Tree Msg
-view (Node payload) =
-    let
-        ( header, contents ) =
-            viewBoth Counter.view (Forest.view view) payload
-    in
-    div [] [ header, contents ]
-        |> Html.map Msg
+view =
+    Utils.wrapView "A tree" <|
+        \(Node payload) ->
+            let
+                ( header, contents ) =
+                    viewBoth Counter.view (Forest.view view) payload
+            in
+            div [] [ header, contents ]
+                |> Html.map Msg
 
 
 update : Update Tree Msg
