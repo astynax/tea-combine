@@ -3,8 +3,6 @@ module Forest exposing (Model, Msg, init, update, view)
 import Array exposing (Array)
 import Debug
 import Html exposing (..)
-import Html.Attributes exposing (style)
-import Html.Events exposing (onClick)
 import TeaCombine exposing (Ix, View, previewEvery)
 import TeaCombine.Pure exposing (Update)
 import TeaCombine.Pure.Many exposing (updateByIndex)
