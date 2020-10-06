@@ -9,7 +9,7 @@ import Html exposing (..)
 import Html.Events exposing (onClick)
 import List
 import Maybe
-import TeaCombine exposing (View, viewBoth)
+import TeaCombine exposing (Both, View, viewBoth)
 import TeaCombine.Pure exposing (Update)
 import TeaCombine.Pure.Pair exposing (updateWith)
 import Utils
@@ -27,7 +27,7 @@ import Utils
 
 
 type Tree
-    = Node ( Counter.Model, Forest.Model Tree )
+    = Node (Both Counter.Model (Forest.Model Tree))
 
 
 
