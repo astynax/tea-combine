@@ -1,11 +1,11 @@
-module TeaCombine.Pure.Many exposing (updateEach, updateAll, updateByIndex)
+module TeaCombine.Pure.Many exposing (updateEach, updateAll)
 
 {-| Combinators those help to work with homogenous sets of sub-models
 (in a form of @Array).
 
 TODO: add some great docs
 
-@docs updateEach, updateAll, updateByIndex
+@docs updateEach, updateAll
 
 -}
 
@@ -41,17 +41,3 @@ updateAll updates =
                 (Array.get idx uarr)
     in
     updateEach updateAt
-
-
-{-| Updates a sub-model with given index in @Array using a sub-update.
--}
-updateByIndex :
-    Update model msg
-    -> Update (Array model) (Ix msg)
-updateByIndex update (Ix idx msg) model =
-    case Array.get idx model of
-        Just elem ->
-            Array.set idx (update msg elem) model
-
-        Nothing ->
-            model

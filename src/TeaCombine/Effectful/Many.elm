@@ -1,11 +1,11 @@
-module TeaCombine.Effectful.Many exposing (updateEach, updateAll, updateByIndex)
+module TeaCombine.Effectful.Many exposing (updateEach, updateAll, subscribeEach)
 
 {-| Combinators those help to work with homogenous sets of sub-models
 (in a form of @Array).
 
 TODO: add some great docs.
 
-@docs updateEach, updateAll, updateByIndex
+@docs updateEach, updateAll, subscribeEach
 
 -}
 
@@ -47,21 +47,12 @@ updateAll updates =
     updateEach updateAt
 
 
-{-| Updates a sub-model with given index in @Array using a sub-update.
+{-| Subscribes each element of the @Array using a sub-subscription (by index).
 -}
-updateByIndex :
-    Update model msg
-    -> Update (Array model) (Ix msg)
-updateByIndex update (Ix idx msg) model =
-    case Array.get idx model of
-        Just elem ->
-            let
-                ( newElem, cmd ) =
-                    update msg elem
-            in
-            ( Array.set idx newElem model
-            , Cmd.map (Ix idx) cmd
-            )
-
-        Nothing ->
-            ( model, Cmd.none )
+subscribeEach :
+    (Int -> Subscription model msg)
+    -> Subscription (Array model) (Ix msg)
+subscribeEach subAt =
+    Array.toList
+        >> List.indexedMap (\idx elem -> subAt idx elem |> Sub.map (Ix idx))
+        >> Sub.batch

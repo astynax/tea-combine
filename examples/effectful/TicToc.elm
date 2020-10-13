@@ -22,8 +22,8 @@ type Msg
     | Tick
 
 
-init : Float -> () -> ( Model, Cmd Msg )
-init i () =
+init : Float -> flags -> ( Model, Cmd Msg )
+init i _ =
     ( { interval = i
       , state = False
       , enabled = True
