@@ -39,6 +39,7 @@ Examples (sources you can find [here](https://github.com/astynax/tea-combine/tre
 - [one](https://astynax.github.com/tea-combine/examples/pure/Main.html) with `Pure` combinators,
 - [another](https://astynax.github.com/tea-combine/examples/pure/Recursive.html) pure but recursive,
 - [one](https://astynax.github.com/tea-combine/examples/effectful/Main.html) with `Effectful` combinators,
+- [another](https://astynax.github.com/tea-combine/examples/effectful/Recursive.html) effectful but recursive,
 - [one](https://astynax.github.com/tea-combine/examples/form/Main.html) with form & binding,
 - [one](https://astynax.github.com/tea-combine/examples/pages/Main.html) with multi-page layout,
 - [another](https://astynax.github.com/tea-combine/examples/xor_pages/Main.html) multi-page one but with the state resetting on tab switch.
