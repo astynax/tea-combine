@@ -26,25 +26,6 @@ updateEach updateAt (Ix idx msg) models =
         |> Maybe.withDefault models
 
 
-{-| Updates a sub-model with given index in @Array using a sub-update.
--}
-updateByIndex :
-    Update model msg
-    -> Update (Array model) (Ix msg)
-updateByIndex updateElem (Ix idx msg) =
-    arrayAdjust idx (updateElem msg)
-
-
-arrayAdjust : Int -> (a -> a) -> Array a -> Array a
-arrayAdjust idx f arr =
-    case Array.get idx arr of
-        Just elem ->
-            Array.set idx (f elem) arr
-
-        Nothing ->
-            arr
-
-
 {-| Updates an @Array of sub-models using a @List of sub-updates.
 -}
 updateAll :
@@ -60,3 +41,17 @@ updateAll updates =
                 (Array.get idx uarr)
     in
     updateEach updateAt
+
+
+{-| Updates a sub-model with given index in @Array using a sub-update.
+-}
+updateByIndex :
+    Update model msg
+    -> Update (Array model) (Ix msg)
+updateByIndex update (Ix idx msg) model =
+    case Array.get idx model of
+        Just elem ->
+            Array.set idx (update msg elem) model
+
+        Nothing ->
+            model

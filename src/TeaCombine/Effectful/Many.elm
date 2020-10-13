@@ -1,11 +1,11 @@
-module TeaCombine.Effectful.Many exposing (updateEach, updateAll)
+module TeaCombine.Effectful.Many exposing (updateEach, updateAll, updateByIndex)
 
 {-| Combinators those help to work with homogenous sets of sub-models
 (in a form of @Array).
 
 TODO: add some great docs.
 
-@docs updateEach, updateAll
+@docs updateEach, updateAll, updateByIndex
 
 -}
 
@@ -27,7 +27,7 @@ updateEach updateAt (Ix idx msg) models =
                 << Tuple.mapSecond (Cmd.map (Ix idx))
                 << updateAt idx msg
             )
-        |> Maybe.withDefault (models, Cmd.none)
+        |> Maybe.withDefault ( models, Cmd.none )
 
 
 {-| Updates an @Array of sub-models using a @List of sub-updates.
@@ -41,7 +41,27 @@ updateAll updates =
             Array.fromList updates
 
         updateAt idx =
-            Maybe.withDefault (\_ m -> (m, Cmd.none))
+            Maybe.withDefault (\_ m -> ( m, Cmd.none ))
                 (Array.get idx uarr)
     in
     updateEach updateAt
+
+
+{-| Updates a sub-model with given index in @Array using a sub-update.
+-}
+updateByIndex :
+    Update model msg
+    -> Update (Array model) (Ix msg)
+updateByIndex update (Ix idx msg) model =
+    case Array.get idx model of
+        Just elem ->
+            let
+                ( newElem, cmd ) =
+                    update msg elem
+            in
+            ( Array.set idx newElem model
+            , Cmd.map (Ix idx) cmd
+            )
+
+        Nothing ->
+            ( model, Cmd.none )
