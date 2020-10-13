@@ -3,7 +3,7 @@
     "name": "astynax/tea-combine",
     "summary": "Combinator library for TEA-powered applications",
     "license": "MIT",
-    "version": "3.0.0",
+    "version": "3.1.0",
     "exposed-modules": [
         "TeaCombine",
         "TeaCombine.Pure",
