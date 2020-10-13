@@ -5,7 +5,7 @@ import Debug
 import Html exposing (..)
 import TeaCombine exposing (Ix, View, previewEvery)
 import TeaCombine.Pure exposing (Update)
-import TeaCombine.Pure.Many exposing (updateByIndex)
+import TeaCombine.Pure.Many exposing (updateEach)
 
 
 type alias Model a =
@@ -22,8 +22,8 @@ view viewA =
 
 
 update : Update a b -> Update (Model a) (Msg b)
-update updateAB =
-    updateByIndex updateAB
+update =
+    updateEach << always
 
 
 init : List a -> Model a

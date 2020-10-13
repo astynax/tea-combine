@@ -6,6 +6,7 @@ module TeaCombine exposing
     , bind, thenBind
     , oneOfViews, orView, oneOfPaths, orPath
     , eitherView
+    , mapBoth
     )
 
 {-| The common types and combinators.
@@ -19,6 +20,7 @@ TODO: add some great docs.
 @docs bind, thenBind
 @docs oneOfViews, orView, oneOfPaths, orPath
 @docs eitherView
+@docs mapBoth
 
 -}
 
@@ -251,3 +253,10 @@ eitherView v2 v1 m =
 
         Right m2 ->
             Html.map Right <| v2 m2
+
+
+{-| Applies two functions to the "sides" of the `Both`.
+-}
+mapBoth : (a -> c) -> (b -> d) -> Both a b -> Both c d
+mapBoth f g ( a, b ) =
+    ( f a, g b )
