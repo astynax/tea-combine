@@ -35,7 +35,7 @@ and have an app that looks like this (image is clickable!):
 
 [![screenshot](https://github.com/astynax/tea-combine/blob/master/assets/example.png)](https://astynax.github.com/tea-combine/examples/pure/Simple.html)
 
-[Here](https://medium.com/@mattia512maldini/the-principles-behind-tea-combine-49120b9137d0) you can find a good explanatory article (thanks to [Maldus512](https://github/Maldus512)!) about *how* all this stuff works!
+[Here](https://medium.com/@mattia512maldini/the-principles-behind-tea-combine-49120b9137d0) you can find a good explanatory article (thanks to [Maldus512](https://github.com/Maldus512)!) about *how* all this stuff works!
 
 ### More examples
 
